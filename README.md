@@ -20,6 +20,16 @@ class User < ActiveRecord::Base
 end
 ```
 
+## Installation
+
+Just add the gem to your Gemfile.
+
+```ruby
+gem 'changey', '>= 0.0.0'
+```
+
+## Usage
+
 To specify what changes to track, you can pass a number of options ot the `when_attribute` method. Here's some examples which should give you an idea of what's supported:
 
 ```ruby
