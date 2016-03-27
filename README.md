@@ -30,7 +30,7 @@ gem 'changey', '>= 0.0.0'
 
 ## Usage
 
-To specify what changes to track, you can pass a number of options ot the `when_attribute` method. Here's some examples which should give you an idea of what's supported:
+To choose what changes you wish to track, you call a `when_attribute` method and provide it with some expectations. Here's an example of some of the expectations you might work with.
 
 ```ruby
 # Whenever the name attribute changes from 'Adam' to any other value
@@ -45,6 +45,21 @@ when_attribute :name, :changes_from => 'Adam', :to => 'Michael'
 # Whenever the name attribute changes to 'Michael' from 'Adam' (same as above)
 when_attribute :name, :changes_to => 'Michael', :from => 'Adam'
 ```
+
+These examples show all your expectation values as strings however you can also use Arrays, Regular Expressions & Procs in place of these. Here's some examples:
+
+```ruby
+# Whenever the name attribute changes from 'Adam' or 'Eve' to any value
+when_attribute :name, :changes_from => ['Adam', 'Eve']
+
+# Whenever the name attribute changes from a name beginning with an P
+when_attribute :name, :changes_from => /\A[P]/i
+
+# Whenever the name attribute changes to something that passed an external check
+when_attribute :name, :changes_to => Proc.new { |value| SomeCheck.check(value) }
+```
+
+In addition to provide your expectations, you also need to provide a block which allows you to choose the behaviour to be executed when the change occurs.
 
 The callbacks which are supported within the `when_attribute` block are:
 

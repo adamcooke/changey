@@ -54,8 +54,17 @@ module Changey
 
     private
 
-    def matches?(value1, value2)
-      value1 == value2
+    def matches?(value, expectation)
+      case expectation
+      when Array
+        expectation.include?(value)
+      when Regexp
+        !!(expectation =~ value)
+      when Proc
+        expectation.call(value) == true
+      else
+        value == expectation
+      end
     end
 
   end

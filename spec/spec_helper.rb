@@ -8,6 +8,11 @@ end
 ActiveRecord::Base.raise_in_transactional_callbacks = true
 
 class User < ActiveRecord::Base
+  def self.create_with_name_change(original, new_name)
+    user = create!(:name => original)
+    user.name = new_name
+    user
+  end
 end
 
 require 'changey/dsl'
