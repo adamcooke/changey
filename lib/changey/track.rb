@@ -32,24 +32,30 @@ module Changey
       current_value  = record.send(attribute)
 
       if expected_other_value != Nothing
-        if direction == :from && previous_value == expected_value && current_value == expected_other_value
+        if direction == :from && matches?(previous_value, expected_value) && matches?(current_value, expected_other_value)
           return true
         end
 
-        if direction == :to && current_value == expected_value && previous_value == expected_other_value
+        if direction == :to && matches?(current_value, expected_value) && matches?(previous_value, expected_other_value)
           return true
         end
       else
-        if direction == :from && previous_value == expected_value
+        if direction == :from && matches?(previous_value, expected_value)
           return true
         end
 
-        if direction == :to && current_value == expected_value
+        if direction == :to && matches?(current_value, expected_value)
           return true
         end
       end
 
       return false
+    end
+
+    private
+
+    def matches?(value1, value2)
+      value1 == value2
     end
 
   end
