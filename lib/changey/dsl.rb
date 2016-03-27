@@ -18,6 +18,10 @@ module Changey
         @changey_tracks ||= []
       end
 
+      def reset_changey!
+        @changey_tracks = nil
+      end
+
       def when_attribute(attribute_name, options = {}, &block)
         unless options.has_key?(:changes_from) || options.has_key?(:changes_to)
           raise MissingChangeValue, "Attribute #{attribute_name} must specify a 'changes_to' or a 'changes_from' value"

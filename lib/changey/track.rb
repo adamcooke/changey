@@ -14,9 +14,11 @@ module Changey
     attr_accessor :after_saves
     attr_accessor :after_commits
 
-    def initialize(attribute)
+    def initialize(attribute, direction = nil, expected_value = nil, expected_other_value = Nothing)
       @attribute = attribute
-      @expected_other_value = Nothing
+      @direction = direction
+      @expected_value = expected_value
+      @expected_other_value = expected_other_value
       @validates = []
       @before_saves = []
       @after_saves = []
