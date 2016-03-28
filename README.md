@@ -33,6 +33,9 @@ gem 'changey', '>= 0.0.0'
 To choose what changes you wish to track, you call a `when_attribute` method and provide it with some expectations. Here's an example of some of the expectations you might work with.
 
 ```ruby
+# Whenever the name changes to any other value
+when_attribute :name, :changes_to => :anything
+
 # Whenever the name attribute changes from 'Adam' to any other value
 when_attribute :name, :changes_from => "Adam"
 
