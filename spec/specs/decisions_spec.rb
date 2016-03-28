@@ -80,5 +80,12 @@ describe "decisions" do
     expect(track.run?(User.create_with_name_change('Lisa', 'Maggie'))).to be true
   end
 
+  it "should run when it changes from anything" do
+    track = Changey::Track.new(:name, :from, :anything)
+    expect(track.run?(User.create_with_name_change('George', 'Adam'))).to be true
+    expect(track.run?(User.create_with_name_change(nil, 'Adam'))).to be true
+    expect(track.run?(User.create_with_name_change('Adam', nil))).to be true
+    expect(track.run?(User.create_with_name_change('Lisa', 'Maggie'))).to be true
+  end
 
 end

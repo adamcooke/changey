@@ -62,6 +62,8 @@ module Changey
         !!(expectation =~ value)
       when Proc
         expectation.call(value) == true
+      when :anything
+        true
       else
         value == expectation
       end
