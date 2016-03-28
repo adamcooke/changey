@@ -10,7 +10,6 @@ module Changey
 
     def self.load(load_into)
       load_into.extend ClassMethods
-      load_into.send :include, InstanceMethods
     end
 
     module ClassMethods
@@ -23,6 +22,10 @@ module Changey
       end
 
       def when_attribute(attribute_name, options = {}, &block)
+        if self.changey_tracks.empty?
+          include InstanceMethods
+        end
+
         unless options.has_key?(:changes_from) || options.has_key?(:changes_to)
           raise MissingChangeValue, "Attribute #{attribute_name} must specify a 'changes_to' or a 'changes_from' value"
         end
@@ -61,14 +64,20 @@ module Changey
         end
       end
 
+      private def clear_changey_tracks
+        @changey_tracks_to_run = nil
+      end
+
       private def run_changey_callbacks(event)
-        @changey_tracks_to_run.each do |track, (was, now)|
-          callbacks = track.send(event.to_s.pluralize)
-          callbacks.each do |callback|
-            if callback.is_a?(Proc)
-              instance_exec(was, now, &callback)
-            elsif callback.is_a?(Symbol)
-              send(callback)
+        if @changey_tracks_to_run
+          @changey_tracks_to_run.each do |track, (was, now)|
+            callbacks = track.send(event.to_s.pluralize)
+            callbacks.each do |callback|
+              if callback.is_a?(Proc)
+                instance_exec(was, now, &callback)
+              elsif callback.is_a?(Symbol)
+                send(callback)
+              end
             end
           end
         end
