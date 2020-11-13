@@ -1,0 +1,12 @@
+inherit_from:
+  - https://dev.k.io/rubocop/rubocop.yml
+AllCops:
+  TargetRubyVersion: 2.4
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'changey/track'
 require 'changey/block_dsl'
 
@@ -13,6 +15,7 @@ module Changey
     end
 
     module ClassMethods
+
       def changey_tracks
         @changey_tracks ||= []
       end
@@ -22,11 +25,11 @@ module Changey
       end
 
       def when_attribute(attribute_name, options = {}, &block)
-        if self.changey_tracks.empty?
+        if changey_tracks.empty?
           include InstanceMethods
         end
 
-        unless options.has_key?(:changes_from) || options.has_key?(:changes_to)
+        unless options.key?(:changes_from) || options.key?(:changes_to)
           raise MissingChangeValue, "Attribute #{attribute_name} must specify a 'changes_to' or a 'changes_from' value"
         end
 
@@ -35,17 +38,18 @@ module Changey
         end
 
         track = Track.new(attribute_name)
-        track.direction = options.has_key?(:changes_from) ? :from : :to
-        track.expected_value = options.has_key?(:changes_from) ? options[:changes_from] : options[:changes_to]
+        track.direction = options.key?(:changes_from) ? :from : :to
+        track.expected_value = options.key?(:changes_from) ? options[:changes_from] : options[:changes_to]
 
-        if options.has_key?(:to) || options.has_key?(:from)
-          track.expected_other_value = options.has_key?(:to) ? options[:to] : options[:from]
+        if options.key?(:to) || options.key?(:from)
+          track.expected_other_value = options.key?(:to) ? options[:to] : options[:from]
         end
 
         BlockDSL.new(track).instance_eval(&block)
-        self.changey_tracks << track
+        changey_tracks << track
         track
       end
+
     end
 
     module InstanceMethods
@@ -58,30 +62,34 @@ module Changey
         base.after_commit       { run_changey_callbacks(:after_commit)  }
       end
 
-      private def set_changey_tracks
+      private
+
+      def set_changey_tracks
         @changey_tracks_to_run = self.class.changey_tracks.select { |t| t.run?(self) }.each_with_object({}) do |track, hash|
           hash[track] = [send("#{track.attribute}_was"), send(track.attribute)]
         end
       end
 
-      private def clear_changey_tracks
+      def clear_changey_tracks
         @changey_tracks_to_run = nil
       end
 
-      private def run_changey_callbacks(event)
-        if @changey_tracks_to_run
-          @changey_tracks_to_run.each do |track, (was, now)|
-            callbacks = track.send(event.to_s.pluralize)
-            callbacks.each do |callback|
-              if callback.is_a?(Proc)
-                instance_exec(was, now, &callback)
-              elsif callback.is_a?(Symbol)
-                send(callback)
-              end
+      def run_changey_callbacks(event)
+        return unless @changey_tracks_to_run
+
+        @changey_tracks_to_run.each do |track, (was, now)|
+          callbacks = track.send(event.to_s.pluralize)
+          callbacks.each do |callback|
+            case callback
+            when Proc
+              instance_exec(was, now, &callback)
+            when Symbol
+              send(callback)
             end
           end
         end
       end
+
     end
 
   end

@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Changey
   class BlockDSL
+
     def initialize(track)
       @track = track
     end
@@ -19,5 +22,6 @@ module Changey
     def after_commit(name = nil, &block)
       @track.after_commits << (block || name)
     end
+
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Changey
   class Track
 
@@ -31,15 +33,7 @@ module Changey
       previous_value = record.send("#{attribute}_was")
       current_value  = record.send(attribute)
 
-      if expected_other_value != Nothing
-        if direction == :from && matches?(previous_value, expected_value) && matches?(current_value, expected_other_value)
-          return true
-        end
-
-        if direction == :to && matches?(current_value, expected_value) && matches?(previous_value, expected_other_value)
-          return true
-        end
-      else
+      if expected_other_value == Nothing
         if direction == :from && matches?(previous_value, expected_value)
           return true
         end
@@ -47,9 +41,19 @@ module Changey
         if direction == :to && matches?(current_value, expected_value)
           return true
         end
+      else
+        if direction == :from && matches?(previous_value, expected_value) &&
+           matches?(current_value, expected_other_value)
+          return true
+        end
+
+        if direction == :to && matches?(current_value, expected_value) &&
+           matches?(previous_value, expected_other_value)
+          return true
+        end
       end
 
-      return false
+      false
     end
 
     private
@@ -59,7 +63,7 @@ module Changey
       when Array
         expectation.include?(value)
       when Regexp
-        !!(expectation =~ value)
+        !(expectation =~ value).nil?
       when Proc
         expectation.call(value) == true
       when :anything
