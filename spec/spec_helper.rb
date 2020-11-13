@@ -7,7 +7,6 @@ ActiveRecord::Migration.create_table :users do |t|
   t.datetime :suspended_at
   t.timestamps null: false
 end
-ActiveRecord::Base.raise_in_transactional_callbacks = true
 
 class User < ActiveRecord::Base
 

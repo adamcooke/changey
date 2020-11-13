@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.authors       = ['Adam Cooke']
   s.email         = ['me@adamcooke.io']
   s.licenses      = ['MIT']
-  s.add_dependency 'activerecord', '>= 4.2', '< 6'
+  s.add_dependency 'activerecord', '>= 4.2', '< 7'
+  s.add_development_dependency 'appraisal'
   s.required_ruby_version = '>= 2.4'
 end
